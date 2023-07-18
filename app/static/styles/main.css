@@ -1,0 +1,59 @@
+
+.center_block {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+form.center_block {
+    width: 300px;
+    background-color: #22223b;
+    color: #f2e9e4;
+    padding: 10px 20px;
+}
+form.center_block input {
+    margin-bottom: 5px;
+}
+
+body {
+    background-color: #f2e9e4;
+    color: #22223b;
+    height: auto;
+}
+
+header{   
+    text-align: center;
+}
+
+.bottom {
+    text-align: center;
+    position: relative;
+    float: bottom;
+}
+
+#chat {
+    background-color: rgba(0,0,0,0.45);
+    width: 26%;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    color: #f2e9e4;
+    word-break: break-all;
+}
+
+#game-container {
+    background-color: #333;
+    border: 3px solid black;
+    padding: 5px;
+    height: 700px;
+    width: 700px;
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
+canvas {
+    position: relative;
+    background-image: url("../img/bg.jpg");
+    background-repeat: no-repeat;
+}

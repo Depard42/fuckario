@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form class="center_block" method="POST">
+    <h2>Welcome, choose you destiny</h2>
+    YOUR NAME
+    <input name="username" type="text" minlength="3" maxlength="12" placeholder="username" required/>
+    <br>
+    YOUR COLOR
+    <input name="color" id="color" type="color" value="#FFFFFF">
+    <br>
+    <input type="submit" value="Start"/>
+</form>
+
+<script type="text/python">
+	from browser import document, html, window
+	import random
+	
+	document["color"].value = "#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
+</script>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="game-container" class="center_block">
+	<canvas id="game-board" width="2048px" height="2048px"></canvas>
+</div>
+<div id="chat">
+	<div id="messages">
+		{% for i in range(10) %}
+			<p>{{mes[i]}}</p>
+		{% endfor %}
+	</div>
+	<input type="text" id="send_mes" placeholder="Type message and press Enter" size="30">
+</div>   
+<script type="text/python">
+	from browser import document, html, window, timer
+	from browser.html import P
+	import math
+
+	socketio = window.io()
+	#io('https://0.0.0.0:8000')
+	WIDTH, HEIGHT = 2048, 2048
+	BoxW, BoxH = 700, 700
+	vector_x, vector_y = 0, 0
+	box = document["game-container"]
+	canvas = document["game-board"]
+	ctx = canvas.getContext("2d")
+
+	def circle(ctx, x, y, radius, color):
+		gr = ctx.createRadialGradient(x,y,radius,x-radius*0.9,y-radius*0.9,radius//6)
+		gr.addColorStop(1.0, '#EEE')
+		gr.addColorStop(0.0, color)
+		ctx.beginPath()
+		ctx.arc(x, y, radius, 0, math.pi*2)
+		#ctx.fillStyle = color
+		ctx.fillStyle = gr
+		ctx.fill()
+		#ctx.closePath()
+
+	def text(ctx, data, x, y):
+		ctx.font = "bold 14px Arial"
+		ctx.textAlign = "center"
+		ctx.textBaseline = "middle"
+		ctx.fillStyle = "#fff"
+		ctx.fillText(data, x, y)
+
+	def mouse_moved(ev):
+		global vector_x
+		global vector_y
+		vector_x = (ev.x-box.x - BoxW//2)/(BoxW//2)
+		vector_y = (ev.y-box.y - BoxH//2)/(BoxH//2)
+		socketio.emit('vector', {'x': vector_x, 'y': vector_y})
+
+	def keypress(ev):
+		if ev.key == "Enter":
+			chat_input = document["send_mes"]
+			if chat_input.value == "":
+				chat_input.focus()
+			else:
+				socketio.emit('send_mes', {'mes': chat_input.value})
+				chat_input.value = ""
+
+	def take_mes(data):
+		mes_block = document["messages"]
+		messages = mes_block.select("p")
+		if len(messages) > 9:
+			messages[0].remove()
+		mes_block <= P(data["mes"])
+
+	def update(data):
+		curr_id = data['curr_id']
+		curr_user = data[curr_id]
+		curr_x = int(curr_user['x'])
+		curr_y = int(curr_user['y'])
+		left_shift =  -curr_x + BoxW//2
+		top_shift = -curr_y + BoxH//2
+		canvas.style.left = str(left_shift)+'px'
+		canvas.style.top = str(top_shift)+'px'
+		ctx.reset()
+		for key in window.Object.keys(data):
+			if key != 'curr_id':
+				user = data[key]
+				x = int(user['x'])
+				y = int(user['y'])
+				radius = 100+int(user['score'])*1.5
+				if (curr_x-BoxW//2 < x+radius < curr_x+BoxW//2 and
+				   curr_y-BoxH//2 < y+radius < curr_y+BoxH//2 or 
+				   curr_x-BoxW//2 < x-radius < curr_x+BoxW//2 and
+				   curr_y-BoxH//2 < y-radius < curr_y+BoxH//2):
+					circle(ctx, x, y, radius, user['color'])
+					if user['name'] != '':
+						text(ctx, user['name'], x, y)
+	
+	def get_update():
+		socketio.emit('get update',{})
+
+	
+	
+	#ctx.fillStyle = "#333"
+	#ctx.fillRect(0, 0, WIDTH, HEIGHT)
+	ctx.fillStyle = "black"
+	
+	
+
+	box.bind("mousemove", mouse_moved)
+	document.select('body')[0].bind("keypress", keypress)
+
+	socketio.on("take_mes", take_mes)
+	socketio.on("update", update)
+	timer.set_interval(get_update, 0.001)
+</script>
+
+{% endblock %}

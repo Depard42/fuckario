@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Fuckar.io</title>
+
+        <meta charset="utf-8"/>
+        <meta name="description" content="Move, eat, feed.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--Fonts from Google Fonts-->
+        <!--Eczar-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet"> 
+
+        <!--CSS-->
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+        
+        <!--JavaScript-->
+        <!--Bryton-->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.11.0/brython.min.js">
+        </script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.11.0/brython_stdlib.js">
+        </script>
+        <!--Socketio-->
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+        <!--main.js-->
+        <script type="text/python" src="{{ url_for('static', filename='scripts/main.py') }}"></script>
+    </head>
+
+    <body onload="brython()">
+        <header>
+            <h1 class="text-center">fuckar.io</h1>
+        </header>
+        
+
+        {% block content %}
+        {% endblock %}
+
+        <div class='bottom'>
+            <p>Created by <em>Depard42</em>, 2023</p>
+        </div>
+
+    </body>
+</html>
