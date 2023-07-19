@@ -27,7 +27,7 @@ class Network:
     def sendBIG(self, data):
         try:
             self.client.send(str.encode(data))
-            return self.client.recv(2048*40).decode()
+            return self.client.recv(2048*60).decode()
         except socket.error as e:
             print(e)
 

@@ -19,7 +19,6 @@ form.center_block input {
 body {
     background-color: #f2e9e4;
     color: #22223b;
-    height: auto;
 }
 
 header{   
@@ -46,8 +45,8 @@ header{
     background-color: #333;
     border: 3px solid black;
     padding: 5px;
-    height: 700px;
-    width: 700px;
+    height: 800px;
+    width: 800px;
     overflow: hidden;
     overflow-x: hidden;
 }
@@ -56,4 +55,5 @@ canvas {
     position: relative;
     background-image: url("../img/bg.jpg");
     background-repeat: no-repeat;
+    background-size: cover;  
 }

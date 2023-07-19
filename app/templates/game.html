@@ -2,7 +2,7 @@
 
 {% block content %}
 <div id="game-container" class="center_block">
-	<canvas id="game-board" width="2048px" height="2048px"></canvas>
+	<canvas id="game-board" width="{{WIDTH}}px" height="{{HEIGHT}}px"></canvas>
 </div>
 <div id="chat">
 	<div id="messages">
@@ -19,8 +19,8 @@
 
 	socketio = window.io()
 	#io('https://0.0.0.0:8000')
-	WIDTH, HEIGHT = 2048, 2048
-	BoxW, BoxH = 700, 700
+	WIDTH, HEIGHT = {{WIDTH}}, {{HEIGHT}}
+	BoxW, BoxH = 800, 800
 	vector_x, vector_y = 0, 0
 	box = document["game-container"]
 	canvas = document["game-board"]
@@ -35,10 +35,14 @@
 		#ctx.fillStyle = color
 		ctx.fillStyle = gr
 		ctx.fill()
-		#ctx.closePath()
+	def circleSimple(ctx, x, y, radius, color):
+		ctx.beginPath()
+		ctx.arc(x, y, radius, 0, math.pi*2)
+		ctx.fillStyle = color
+		ctx.fill()
 
-	def text(ctx, data, x, y):
-		ctx.font = "bold 14px Arial"
+	def text(ctx, data, x, y, size):
+		ctx.font = "bold {0}px Arial".format(size)
 		ctx.textAlign = "center"
 		ctx.textBaseline = "middle"
 		ctx.fillStyle = "#fff"
@@ -70,26 +74,44 @@
 	def update(data):
 		curr_id = data['curr_id']
 		curr_user = data[curr_id]
-		curr_x = int(curr_user['x'])
-		curr_y = int(curr_user['y'])
-		left_shift =  -curr_x + BoxW//2
-		top_shift = -curr_y + BoxH//2
+		curr_radius = int(curr_user['radius'])
+		relative_relation = curr_radius/{{START_RADIUS}}/1.1
+		
+		curr_x = float(curr_user['x'])
+		curr_y = float(curr_user['y'])
+		print(curr_x, curr_y)
+		relativeBoxW = BoxW * relative_relation
+		relativeBoxH = BoxH * relative_relation
+		left_shift = -curr_x // relative_relation + BoxW//2
+		top_shift = -curr_y // relative_relation + BoxH//2
 		canvas.style.left = str(left_shift)+'px'
 		canvas.style.top = str(top_shift)+'px'
+		if WIDTH/relative_relation > BoxW and HEIGHT/relative_relation > BoxH:
+			canvas.style.width = str(WIDTH/relative_relation)+'px'
+			canvas.style.height = str(HEIGHT/relative_relation)+'px'
 		ctx.reset()
 		for key in window.Object.keys(data):
 			if key != 'curr_id':
 				user = data[key]
 				x = int(user['x'])
 				y = int(user['y'])
-				radius = 100+int(user['score'])*1.5
-				if (curr_x-BoxW//2 < x+radius < curr_x+BoxW//2 and
-				   curr_y-BoxH//2 < y+radius < curr_y+BoxH//2 or 
-				   curr_x-BoxW//2 < x-radius < curr_x+BoxW//2 and
-				   curr_y-BoxH//2 < y-radius < curr_y+BoxH//2):
-					circle(ctx, x, y, radius, user['color'])
-					if user['name'] != '':
-						text(ctx, user['name'], x, y)
+				radius = int(user['radius'])
+				LB = curr_x-relativeBoxW//2 #left border
+				RB = curr_x+relativeBoxW//2 #right border
+				TB = curr_y-relativeBoxH//2 #top border
+				BB = curr_y+relativeBoxH//2 #bottom border
+				if ((LB <= x <= RB and TB <= y <= BB) or                            #центр на экране
+					(RB < x and RB > x-radius and TB-radius < y < BB+radius) or #центр правее, но окружность залезает на экран
+					(x < LB and x+radius > LB and TB-radius < y < BB+radius) or #центр левее, но окружность залезает на экран
+					(y < TB and TB < y+radius and LB-radius < x < RB+radius) or #центр выше, но окружность залезает на экран
+					(BB < y and y-radius < BB and LB-radius < x < RB+radius)    #центр ниже, но окружность залезает на экран
+				):
+					
+					if user['name'] != '{{FOOD_NAME}}':
+						circle(ctx, x , y, radius, user['color'])
+						text(ctx, user['name'], x, y, radius//6)
+					else:
+						circleSimple(ctx, x , y, radius, user['color'])
 	
 	def get_update():
 		socketio.emit('get update',{})

@@ -9,6 +9,7 @@ from engineio.payload import Payload
 Payload.max_decode_packets = 50
 
 import data_connector as data_client
+from config import *
 import datetime
 
 app = Flask(__name__)
@@ -30,7 +31,7 @@ def func():
         session['last_update_vector'] = datetime.datetime.now()
         data_client.add(session['id'], session['username'], session['color'], x=100, y=100)
         print(session['username'], "connected with color", session["color"])
-        return render_template("game.html", mes=mes)
+        return render_template("game.html", mes=mes, WIDTH=WIDTH, HEIGHT=HEIGHT, FOOD_NAME=FOOD_NAME, START_RADIUS=START_RADIUS)
     return render_template("index.html")
 
 

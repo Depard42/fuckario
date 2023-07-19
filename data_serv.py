@@ -12,8 +12,8 @@ class Data:
         return self.data[id]
     def get_all(self):
         return json.dumps(self.data)
-    def del_byid(self, id):
-        pass
+    def delete_byId(self, id):
+        del self.data[id]
     def add(self, id, name, color, x, y):
         self.data[id] = {'name': name, 
                          'color':color, 
@@ -22,7 +22,8 @@ class Data:
                          'vector_x':0., 
                          'vector_y':0., 
                          'score': 0,
-                         'alive': True}
+                         'alive': True,
+                         'radius': START_RADIUS}
         return True
     def change_vector(self, id, vector_x, vector_y):
         self.data[id]['vector_x'] = float(vector_x)
@@ -34,6 +35,8 @@ class Data:
         return True
     def change_score(self, id, score):
         self.data[id]['score'] = score
+    def change_radius(self, id, radius):
+        self.data[id]['radius'] = radius
 
 def command_interpreter(db, r):
     r_command = r.split()[0]
@@ -77,6 +80,7 @@ def serv_run():
                 break
         print("lost connections to Data Server")
         conn.close()
+    
     start_new_thread(logic.run, (db,))
     while True:
         conn, addr = soc.accept()
