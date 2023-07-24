@@ -5,4 +5,4 @@ from config import *
 
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host=HOST, port=PORT)
+    socketio.run(app, debug=False, host=HOST, port=PORT)

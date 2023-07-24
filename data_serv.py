@@ -26,9 +26,11 @@ class Data:
                          'radius': START_RADIUS}
         return True
     def change_vector(self, id, vector_x, vector_y):
-        self.data[id]['vector_x'] = float(vector_x)
-        self.data[id]['vector_y'] = float(vector_y)
-        return True
+        if id in self.data.keys():
+            self.data[id]['vector_x'] = float(vector_x)
+            self.data[id]['vector_y'] = float(vector_y)
+            return True
+        return False
     def change_xy(self, id, x, y):
         self.data[id]['x'] = float(x)
         self.data[id]['y'] = float(y)

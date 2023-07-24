@@ -73,13 +73,15 @@
 
 	def update(data):
 		curr_id = data['curr_id']
+		if not curr_id in window.Object.keys(data):
+			print('loose')
+			return 1
 		curr_user = data[curr_id]
 		curr_radius = int(curr_user['radius'])
 		relative_relation = curr_radius/{{START_RADIUS}}/1.1
 		
 		curr_x = float(curr_user['x'])
 		curr_y = float(curr_user['y'])
-		print(curr_x, curr_y)
 		relativeBoxW = BoxW * relative_relation
 		relativeBoxH = BoxH * relative_relation
 		left_shift = -curr_x // relative_relation + BoxW//2
@@ -115,12 +117,6 @@
 	
 	def get_update():
 		socketio.emit('get update',{})
-
-	
-	
-	#ctx.fillStyle = "#333"
-	#ctx.fillRect(0, 0, WIDTH, HEIGHT)
-	ctx.fillStyle = "black"
 	
 	
 
@@ -129,7 +125,7 @@
 
 	socketio.on("take_mes", take_mes)
 	socketio.on("update", update)
-	timer.set_interval(get_update, 0.001)
+	timer.set_interval(get_update, 0.09)
 </script>
 
 {% endblock %}

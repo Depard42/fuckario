@@ -57,6 +57,9 @@ def run(db):
                     user['y'] = new_y
                 for else_user_id in db.data.keys():
                     else_user = db.data[else_user_id]
-                    if else_user['alive']  and dist(user, else_user) < radius + else_user['radius'] and else_user['name']==FOOD_NAME:
-                        eat(user, else_user)
-        time.sleep(0.02)
+                    if else_user['alive']  and dist(user, else_user) < radius + else_user['radius']:# and else_user['name']==FOOD_NAME:
+                        if user['radius'] / else_user['radius'] > 1.3:
+                            eat(user, else_user)
+                        elif else_user['radius'] / user['radius'] > 1.3:
+                            eat( else_user,user)
+        time.sleep(0.0166)

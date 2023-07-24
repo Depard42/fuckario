@@ -65,7 +65,7 @@ def get_update(data):
     global last_update_time
     global last_update_data
     curr_time = datetime.datetime.now()
-    if (curr_time-last_update_time).total_seconds() > 0.03:
+    if (curr_time-last_update_time).total_seconds() > 0.0166:
         last_update_data = data_client.get_all()
         last_update_time = curr_time
     last_update_data['curr_id'] = session['id']
